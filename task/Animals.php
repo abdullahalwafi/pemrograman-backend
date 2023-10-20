@@ -30,7 +30,11 @@ class Animal
 
     public function update($index, $name)
     {
-        $this->data[$index]['name'] = $name;
+        if(isset($this->data[$index])){
+            $this->data[$index]['name'] = $name;
+        } else{
+            echo "update gagal: data tidak ditemukan!<br>";
+        }
     }
     public function destroy($index)
     {
@@ -49,7 +53,7 @@ $animal->index();
 echo '<br>';
 
 echo 'Update - Mengedit hewan <br>';
-$animal->update(0, "Kucing Anggora");
+$animal->update(22, "Kucing Anggora");
 $animal->index();
 echo '<br>';
 
