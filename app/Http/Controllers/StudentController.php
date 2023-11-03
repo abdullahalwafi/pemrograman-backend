@@ -13,12 +13,21 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::all();
-        $data = [
-            'message' => 'Get All students',
-            'data' => $students
-        ];
+        if ($students->isEmpty()) {
+            $data = [
+                'message' => 'Student is empty',
+                'data' => []
+            ];
 
-        return response()->json($data, 200);
+            return response()->json($data, 204);
+        } else {
+            $data = [
+                'message' => 'Get All students',
+                'data' => $students
+            ];
+
+            return response()->json($data, 200);
+        }
     }
 
     /**
@@ -26,6 +35,12 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nama' => 'required|string',
+            'nim' => 'required|string',
+            'email' => 'required|email',
+            'jurusan' => 'required|string'
+        ]);
         $input = [
             'nama' => $request->nama,
             'nim' => $request->nim,
@@ -50,12 +65,20 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
 
-        $data = [
-            'message' => 'Get Student',
-            'data' => $student
-        ];
+        if (!$student) {
+            $data = [
+                'message' => 'Student not Found',
+                'data' => []
+            ];
 
-        return response()->json($data, 200);
+            return response()->json($data, 404);
+        }
+            $data = [
+                'message' => 'Get Student',
+                'data' => $student
+            ];
+
+            return response()->json($data, 200);
     }
 
     /**
@@ -65,11 +88,19 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
 
+        if (!$student) {
+            $data = [
+                'message' => 'Student not Found',
+                'data' => []
+            ];
+
+            return response()->json($data, 404);
+        }
         $input = [
-            'nama' => $request->nama,
-            'nim' => $request->nim,
-            'email' => $request->email,
-            'jurusan' => $request->jurusan
+            'nama' => $request->nama ?? $student->nama,
+            'nim' => $request->nim ?? $student->nim,
+            'email' => $request->email ?? $student->email,
+            'jurusan' => $request->jurusan ?? $student->jurusan
         ];
 
         $student->update($input);
@@ -89,6 +120,14 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
 
+        if (!$student) {
+            $data = [
+                'message' => 'Student not Found',
+                'data' => []
+            ];
+
+            return response()->json($data, 404);
+        }
         $student->delete();
 
         $data = [
