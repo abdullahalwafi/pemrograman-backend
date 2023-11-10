@@ -96,6 +96,12 @@ class StudentController extends Controller
 
             return response()->json($data, 404);
         }
+        $request->validate([
+            'nama' => 'required|string',
+            'nim' => 'required|string',
+            'email' => 'required|email',
+            'jurusan' => 'required|string'
+        ]);
         $input = [
             'nama' => $request->nama ?? $student->nama,
             'nim' => $request->nim ?? $student->nim,
